@@ -1,1 +1,0 @@
-﻿// afinador util — a implementar

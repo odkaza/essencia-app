@@ -1,1 +1,0 @@
-﻿// CartaoAcorde component — a implementar

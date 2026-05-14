@@ -1,1 +1,0 @@
-﻿// QuizQuestao component — a implementar
