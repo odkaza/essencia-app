@@ -2,8 +2,8 @@
   "name": "ESSÊNCIA — Iniciação Musical",
   "short_name": "ESSÊNCIA",
   "description": "Adoração e Iniciação Musical — MEVAM Alphaville",
-  "start_url": "/essencia-app/",
-  "scope": "/essencia-app/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#f0faf4",
@@ -12,13 +12,13 @@
   "categories": ["education", "music"],
   "icons": [
     {
-      "src": "/essencia-app/icons/logo-essencia-favicon.png",
+      "src": "/icons/logo-essencia-favicon.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/essencia-app/icons/logo-essencia-favicon.png",
+      "src": "/icons/logo-essencia-favicon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

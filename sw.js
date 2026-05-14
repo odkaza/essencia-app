@@ -1,5 +1,5 @@
 const CACHE = 'essencia-v1'
-const BASE = '/essencia-app'
+const BASE = ''
 
 self.addEventListener('install', (e) => {
   self.skipWaiting()
@@ -43,7 +43,7 @@ self.addEventListener('fetch', (e) => {
         const cached = await cache.match(e.request)
         if (cached) return cached
         // SPA fallback: serve the app shell for any navigation
-        return cache.match(BASE + '/') ?? cache.match(BASE + '/index.html')
+        return cache.match('/') ?? cache.match('/index.html')
       }
     })
   )
