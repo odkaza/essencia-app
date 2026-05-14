@@ -1,0 +1,1 @@
+﻿// notas util — a implementar
