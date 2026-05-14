@@ -4,6 +4,7 @@ import Layout from '../components/Layout'
 import TecladoVisual from '../components/TecladoVisual'
 import { getCampoHarmonico, TONICS, GRAUS_MAIOR, GRAUS_MENOR } from '../data/campos-harmonicos'
 import { getAcordeTeclado } from '../data/acordes-teclado'
+import { useQuiz } from '../hooks/useQuiz'
 
 // ─── Static data ──────────────────────────────────────────────────────────────
 
@@ -172,24 +173,6 @@ function gerarPerguntas(instrumento) {
   })
 }
 
-// ─── Score persistence ────────────────────────────────────────────────────────
-
-function lerScores(instrumento) {
-  try { return JSON.parse(localStorage.getItem(`essencia_quiz_${instrumento}`) ?? '{}') }
-  catch { return {} }
-}
-
-function salvarScore(instrumento, aulaId, acertos) {
-  const scores = lerScores(instrumento)
-  const prev   = scores[aulaId] ?? { melhor: 0, tentativas: 0 }
-  scores[aulaId] = {
-    melhor:     Math.max(prev.melhor, acertos),
-    ultimo:     acertos,
-    tentativas: prev.tentativas + 1,
-  }
-  localStorage.setItem(`essencia_quiz_${instrumento}`, JSON.stringify(scores))
-}
-
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 function ProgressoDots({ total, atual, respondidas }) {
@@ -220,6 +203,7 @@ function Estrelas({ acertos, total }) {
 export default function Quiz({ instrumento }) {
   const { aulaId } = useParams()
   const navigate   = useNavigate()
+  const { scores, salvarScore } = useQuiz(instrumento)
 
   // Quiz state machine: inicio → pergunta → feedback → resultado
   const [fase,          setFase]         = useState('inicio')
@@ -229,7 +213,6 @@ export default function Quiz({ instrumento }) {
   const [notasSel,      setNotasSel]     = useState([])    // for tipo5
   const [acertos,       setAcertos]      = useState(0)
 
-  const scores    = lerScores(instrumento)
   const prevScore = scores[aulaId] ?? null
 
   // ── Derived ──
@@ -268,10 +251,10 @@ export default function Quiz({ instrumento }) {
     setFase('feedback')
   }
 
-  function proxima() {
+  async function proxima() {
     const ultimo = idx >= TOTAL_PERGUNTAS - 1
     if (ultimo) {
-      salvarScore(instrumento, aulaId, acertos + (correto ? 0 : 0)) // already counted
+      await salvarScore(aulaId, acertos, TOTAL_PERGUNTAS)
       setFase('resultado')
     } else {
       setIdx(i => i + 1)
