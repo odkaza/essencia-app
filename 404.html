@@ -1,14 +1,15 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
+    <title>ESSÊNCIA</title>
     <script>
       var l = window.location;
       l.replace(
         l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
         l.pathname.split('/').slice(0, 1).join('/') +
         '/?p=' + encodeURIComponent(l.pathname + l.search) +
-        (l.hash || '')
+        l.hash
       );
     </script>
   </head>
