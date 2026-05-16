@@ -1,21 +1,24 @@
-const CACHE = 'essencia-v1'
-const BASE = ''
+const CACHE_NAME = 'essencia-1778898659983'
 
 self.addEventListener('install', (e) => {
   self.skipWaiting()
-  // Best-effort warm-up; don't block install if the shell isn't available yet
   e.waitUntil(
-    caches.open(CACHE).then((cache) => cache.add(BASE + '/').catch(() => {}))
+    caches.open(CACHE_NAME).then((cache) => cache.add('/').catch(() => {}))
   )
 })
 
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
-    )
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+    ).then(() => self.clients.claim())
   )
-  self.clients.claim()
+})
+
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') {
+    self.skipWaiting()
+  }
 })
 
 self.addEventListener('fetch', (e) => {
@@ -24,9 +27,9 @@ self.addEventListener('fetch', (e) => {
   if (url.origin !== self.location.origin) return
 
   e.respondWith(
-    caches.open(CACHE).then(async (cache) => {
-      // Cache-first for versioned assets (hashed filenames never change)
-      if (url.pathname.includes('/assets/')) {
+    caches.open(CACHE_NAME).then(async (cache) => {
+      // Cache-first apenas para assets com hash no nome (imutáveis)
+      if (url.pathname.match(/\/assets\/.+\.[a-f0-9]{8}\./)) {
         const cached = await cache.match(e.request)
         if (cached) return cached
         const response = await fetch(e.request)
@@ -34,7 +37,7 @@ self.addEventListener('fetch', (e) => {
         return response
       }
 
-      // Network-first for everything else; fall back to cache then shell
+      // Network-first para JS, CSS, HTML e tudo mais
       try {
         const response = await fetch(e.request)
         if (response.ok) cache.put(e.request, response.clone())
@@ -42,7 +45,6 @@ self.addEventListener('fetch', (e) => {
       } catch {
         const cached = await cache.match(e.request)
         if (cached) return cached
-        // SPA fallback: serve the app shell for any navigation
         return cache.match('/') ?? cache.match('/index.html')
       }
     })
