@@ -2,10 +2,14 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <script>
-      sessionStorage.setItem('redirect', location.pathname)
-      location.href = '/'
-    </script>
+    <title>ESSÊNCIA</title>
   </head>
-  <body></body>
+  <body>
+    <script>
+      var path = window.location.pathname
+      if (path !== '/') {
+        window.location.replace('/')
+      }
+    </script>
+  </body>
 </html>
