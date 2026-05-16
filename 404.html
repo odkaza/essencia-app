@@ -3,13 +3,20 @@
   <head>
     <meta charset="utf-8">
     <title>ESSÊNCIA</title>
-  </head>
-  <body>
     <script>
+      // Salvar o caminho atual no sessionStorage
       var path = window.location.pathname
-      if (path !== '/') {
-        window.location.replace('/')
+      var search = window.location.search
+      var hash = window.location.hash
+
+      // Evitar loop: só redirecionar se não for a raiz
+      if (path !== '/' && path !== '') {
+        sessionStorage.setItem('spa_redirect', path + search + hash)
       }
+
+      // Sempre ir para a raiz
+      window.location.replace('/')
     </script>
-  </body>
+  </head>
+  <body></body>
 </html>
